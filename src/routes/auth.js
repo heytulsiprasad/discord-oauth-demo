@@ -9,7 +9,7 @@ router.get(
 		failureMessage: "/forbidden",
 	}),
 	(req, res) => {
-		res.sendStatus(200);
+		res.json(req.user);
 	}
 );
 
