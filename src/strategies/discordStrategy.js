@@ -4,11 +4,14 @@ const DiscordUser = require("../models/DiscordUser");
 
 let scopes = ["identify", "guilds"];
 
+// responsible for storing user to `req.user` and also to `req.session`
 passport.serializeUser((user, done) => {
-	done(null, user.id);
+	console.log("SERIALISE");
+	done(null, user.id); // user.id gets stored inside req.session.passport.user
 });
 
 passport.deserializeUser(async (id, done) => {
+	console.log("DESERIALISE");
 	const user = await DiscordUser.findById(id);
 	if (user) done(null, user);
 });
@@ -27,8 +30,10 @@ passport.use(
 					discordId: profile.id,
 				});
 				if (user) {
+					console.log("User exists!");
 					done(null, user);
 				} else {
+					console.log("User doesn't exists ₹₹₹");
 					const newUser = await DiscordUser.create({
 						discordId: profile.id,
 						username: profile.username,

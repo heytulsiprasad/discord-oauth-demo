@@ -6,11 +6,9 @@ router.get("/", passport.authenticate("discord"));
 router.get(
 	"/redirect",
 	passport.authenticate("discord", {
-		failureMessage: "/forbidden",
-	}),
-	(req, res) => {
-		res.json(req.user);
-	}
+		failureRedirect: "/forbidden",
+		successRedirect: "/dashboard",
+	})
 );
 
 module.exports = router;
