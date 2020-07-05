@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
+const path = require("path");
 const PORT = process.env.PORT || 3001;
 
 const session = require("express-session");
@@ -28,14 +29,34 @@ app.use(
 	})
 );
 
-// Passport
+// Setup Templating engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
 
+// Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Middleware Routes
 app.use("/auth", authRoute);
 app.use("/dashboard", dashRoute);
+
+function isAuthorized(req, res, next) {
+	if (req.user) {
+		// session exists
+		console.log("User logged in already!");
+		res.redirect("/dashboard");
+		// next(); /* error: Cannot set headers after they are sent to the client */
+	} else {
+		console.log("User is not logged in");
+		next();
+	}
+}
+
+app.get("/", isAuthorized, (req, res) => {
+	res.render("home");
+});
 
 app.listen(PORT, () => {
 	console.log(`Listening on port ${PORT}`);

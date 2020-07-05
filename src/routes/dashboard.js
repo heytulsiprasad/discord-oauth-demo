@@ -4,7 +4,7 @@ function isAuthorized(req, res, next) {
 	if (req.user) {
 		// session exists
 		console.log("User is logged in");
-		console.log(req.user);
+		// console.log(req.user);
 		next();
 	} else {
 		console.log("User is not logged in");
@@ -13,7 +13,7 @@ function isAuthorized(req, res, next) {
 }
 
 router.get("/", isAuthorized, (req, res) => {
-	res.sendStatus(200);
+	res.render("dashboard", { user: req.user.username });
 });
 
 module.exports = router;
